@@ -154,7 +154,7 @@ echo "############################################"
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Panel"
 read -p "Enter FQDN: " panelfqdn
-/usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email --manual-public-ip-logging-ok
+/usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --agree-tos --register-unsafely-without-email --manual-public-ip-logging-ok
 
 # Execute Composer Setup
 cp .env.example .env
