@@ -161,9 +161,9 @@ php artisan p:user:make
 
 # Configure Nginx Default Site
 curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/nginx_template_no_ssl -o /etc/nginx/conf.d/pterodactyl.conf
-sed "s/<domain>/$panelfqdn/g" /etc/nginx/conf.d/pterodactyl.conf
+sed -i "s/<domain>/$panelfqdn/g" /etc/nginx/conf.d/pterodactyl.conf
 chown -R nginx:nginx *
-service nginx restart
+systemctl restart nginx
 
 # Configure Ptero Service
 curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/pteroq.service -o /etc/systemd/system/pteroq.service
