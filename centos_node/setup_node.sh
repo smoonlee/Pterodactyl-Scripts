@@ -61,7 +61,7 @@ echo " Please Visit: https://github.com/pterodactyl/daemon/releases"
 echo " Copy the link for the daemon.tar.gz and paste below!"
 echo ""
 
-read -p "Paste Here: " NodeRepo
+read -p 'Paste Here: ' NodeRepo
 
 curl -L $NodeRepo | tar --strip-components=1 -xzv
 npm install --only=production --no-audit --unsafe-perm
@@ -72,7 +72,7 @@ echo " Please go to the control panel and create"
 echo " a new node and generate the automated token key"
 echo ""
 
-read -p "Paste Here: " NodeToken
+read -p 'Paste Here: ' NodeToken
 $NodeToken
 
 sudo npm start
