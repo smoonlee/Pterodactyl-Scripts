@@ -1,4 +1,3 @@
-#
 #!/bin/bash
 #
 
@@ -7,10 +6,10 @@ clear
 
 # Check Session Status
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root"
-   exit 1
+    echo "This script must be run as root"
+    exit 1
 elif [[ $EUID -eq 0 ]]; then
-   echo -e "Session Running as \e[36mROOT\e[0m"
+    echo -e "Session Running as \e[36mROOT\e[0m"
 fi
 
 echo ""
@@ -21,7 +20,7 @@ echo "#  Version 0.1-Alpha                         #"
 echo "#                                            #"
 echo "##############################################"
 
-# Check System Updates 
+# Check System Updates
 yum update
 yum install -y yum-utils net-tools expect
 
@@ -45,17 +44,19 @@ setsebool -P httpd_can_network_connect 1
 setsebool -P httpd_execmem 1
 setsebool -P httpd_unified 1
 
-# Install Nginx 
+# Install Nginx
 yum install -y nginx
 firewall-cmd --add-service=http --permanent
-firewall-cmd --add-service=https --permanent 
+firewall-cmd --add-service=https --permanent
 firewall-cmd --reload
 
 # Install PHP 7.4
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 yum install -y https://rpms.remirepo.net/enterprise/remi-release-8.rpm
-yum update ; yum install -y php php-common php-fpm php-cli php-json php-mysqlnd php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache
+yum update
+yum install -y php php-common php-fpm php-cli php-json php-mysqlnd php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache
 
+# Configure PHP-FPM
 curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/www-pterodactyl.conf -o /etc/php-fpm.d/www-pterodactyl.conf
 systemctl enable php-fpm
 systemctl start php-fpm
@@ -67,12 +68,13 @@ systemctl enable redis
 
 # Install MariaDB
 curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-yum update ; yum -y install mariadb-server mariadb
-systemctl enable mariadb 
+yum update
+yum -y install mariadb-server mariadb
+systemctl enable mariadb
 systemctl start mariadb
 
+#Auto Complete mysql_secure_installation
 SECURE_MYSQL=$(expect -c "
-set timeout 10
 spawn mysql_secure_installation
 expect \"Enter current password for root (enter for none):\"
 send \"$MYSQL\r\"
@@ -141,6 +143,12 @@ echo "#       Configure Pterodactyl Panel        #"
 echo "#                                          #"
 echo "############################################"
 
+echo ""
+echo "Please enter the FQDN for the Pyterdactyl Panel"
+read -p "Enter FQDN: " panelfqdn
+/usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email
+
+# Execute Composer Setup
 cp .env.example .env
 /usr/local/bin/composer install --no-dev --optimize-autoloader
 
@@ -158,12 +166,12 @@ php artisan p:environment:mail
 php artisan migrate --seed
 php artisan p:user:make
 
+# Configure Nginx Default Site
 curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/nginx_template -o /etc/nginx/conf.d/pterodactyl.conf
-
 chown -R nginx:nginx *
 service nginx restart
 
-# Configure Ptero Service 
+# Configure Ptero Service
 curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/pteroq.service -o /etc/systemd/system/pteroq.service
 systemctl enable pteroq.service
 systemctl start pteroq.service
