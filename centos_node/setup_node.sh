@@ -46,6 +46,11 @@ echo "#  Installing Pterodactyl Daemon Software  #"
 echo "#                                          #"
 echo "############################################"
 
+echo ""
+echo "Please enter the FQDN for the Pyterdactyl Node"
+read -p "Enter FQDN: " nodefqdn
+/usr/local/bin/certbot-auto certonly -d "$nodefqdn" --manual --preferred-challenges dns --agree-tos --register-unsafely-without-email --manual-public-ip-logging-ok
+
 mkdir -p /srv/daemon /srv/daemon-data
 cd /srv/daemon
 
