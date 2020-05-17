@@ -135,6 +135,10 @@ echo " Copy the link for the panel.tar.gz and paste below!"
 echo ""
 
 read -p "Paste Here: " PanelRepo
+if [ "$panelRepo" = "" ]; then
+    echo "Value Cannot be Empty!!"
+    read -p "Paste Here: " PanelRepo
+fi
 
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 mkdir -p /var/www/pterodactyl
@@ -154,6 +158,12 @@ echo "############################################"
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Panel"
 read -p "Enter FQDN: " panelfqdn
+if [ "$panelfqdn" = "" ]; then
+    echo "Value Cannot be Empty!!"
+    read -p "Paste Here: " panelfqdn
+fi
+
+# Execute Certbot Certificate
 /usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --agree-tos --register-unsafely-without-email --manual-public-ip-logging-ok
 
 # Execute Composer Setup
