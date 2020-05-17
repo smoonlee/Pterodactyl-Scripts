@@ -176,3 +176,11 @@ systemctl restart nginx
 curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/pteroq.service -o /etc/systemd/system/pteroq.service
 systemctl enable pteroq.service
 systemctl start pteroq.service
+
+# Script Completed
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#    Pterodactyl Panel Setup Completed!    #"
+echo "#                                          #"
+echo "############################################"
