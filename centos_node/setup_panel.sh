@@ -74,7 +74,7 @@ echo "#                                         #"
 echo "###########################################"
 
 # Configure MariaDB Passwords
-MaridDBMaster=$(openssl rand -base64 21)
+$MariaDBMaster=$(openssl rand -base64 21)
 $MySQLUserPwd=$(openssl rand -base64 21)
 
 # Auto Complete mysql_secure_installation
