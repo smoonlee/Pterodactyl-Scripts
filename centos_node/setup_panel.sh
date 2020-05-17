@@ -58,6 +58,14 @@ yum install -y redis
 systemctl start redis
 systemctl enable redis
 
+# Configure Pterodactyl Panel
+echo ""
+echo "###########################################"
+echo "#                                         #"
+echo "#     Configuring MariaDB Inital Setup    #"
+echo "#                                         #"
+echo "###########################################"
+
 # Install MariaDB
 curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 yum update ; yum -y install mariadb-server mariadb
