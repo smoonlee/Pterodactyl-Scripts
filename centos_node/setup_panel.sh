@@ -60,18 +60,9 @@ systemctl enable redis
 
 # Install MariaDB
 curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-yum update
-yum -y install mariadb-server mariadb
-systemctl enable mariadb
+yum update ; yum -y install mariadb-server mariadb
+systemctl enable mariadb 
 systemctl start mariadb
-
-# Configure Pterodactyl Panel
-echo ""
-echo "###########################################"
-echo "#                                         #"
-echo "#     Configuring MariaDB Inital Setup    #"
-echo "#                                         #"
-echo "###########################################"
 
 SECURE_MYSQL=$(expect -c "
 set timeout 10
@@ -90,7 +81,6 @@ expect \"Reload privilege tables now?\"
 send \"y\r\"
 expect eof
 ")
-echo "mysql_secure_installation completed!"
 
 # Configure Panel Database
 MySQLUserPwd=$(openssl rand -base64 21)
@@ -113,14 +103,6 @@ echo "Database: panel"
 echo "Username: pterodactyl"
 echo "Password: $MySQLUserPwd"
 
-echo ""
-echo ""
-echo "MySQL Database: Panel Created!"
-echo ""
-echo "Database: panel"
-echo "Username: pterodactyl"
-echo "Password: $MySQLUserPwd"
-
 # Install Pterodactyl Panel
 echo ""
 echo "############################################"
@@ -134,6 +116,7 @@ echo " New Panel? You need to get you some Pterodactyl Panel goodness!!"
 echo " Please Visit: https://github.com/pterodactyl/panel/releases"
 echo " Copy the link for the panel.tar.gz and paste below!"
 echo ""
+
 read -p "Paste Here: " PanelRepo
 
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
