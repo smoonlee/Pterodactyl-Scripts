@@ -41,7 +41,7 @@ chmod -R 755 storage/* bootstrap/cache
 echo ""
 
 # Update Dependencies
-composer install --no-dev --optimize-autoloader
+/usr/local/bin/composer install --no-dev --optimize-autoloader
 echo ""
 
 # Reset Complied Template Cache
