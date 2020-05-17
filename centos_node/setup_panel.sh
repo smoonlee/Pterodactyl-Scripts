@@ -24,14 +24,6 @@ echo "##############################################"
 yum update
 yum install -y yum-utils net-tools expect
 
-# Install Pterodactyl Panel Packages
-echo ""
-echo "############################################"
-echo "#                                          #"
-echo "#  Installing Pterodactyl Panel Packages   #"
-echo "#                                          #"
-echo "############################################"
-
 # Setup cert-bot
 curl -L https://dl.eff.org/certbot-auto -o /usr/local/bin/certbot-auto
 chown root /usr/local/bin/certbot-auto
@@ -81,9 +73,10 @@ echo "#     Configuring MariaDB Inital Setup    #"
 echo "#                                         #"
 echo "###########################################"
 
-#Auto Complete mysql_secure_installation
+# Auto Complete mysql_secure_installation
+
 SECURE_MYSQL=$(expect -c "
-set timeout 5
+set timeout 10
 spawn mysql_secure_installation
 expect \"Enter current password for root (enter for none):\"
 send \"$MYSQL\r\"
@@ -99,9 +92,10 @@ expect \"Reload privilege tables now?\"
 send \"y\r\"
 expect eof
 ")
+echo "mysql_secure_installation completed!"
 
 # Configure Panel Database
-MySQLUserPwd=$(openssl rand -base64 16)
+MySQLUserPwd=$(openssl rand -base64 21)
 
 echo ""
 echo "Please Enter Root MySQL Password to execute mysql_secure_installation"
@@ -134,7 +128,6 @@ echo " New Panel? You need to get you some Pterodactyl Panel goodness!!"
 echo " Please Visit: https://github.com/pterodactyl/panel/releases"
 echo " Copy the link for the panel.tar.gz and paste below!"
 echo ""
-
 read -p "Paste Here: " PanelRepo
 
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
