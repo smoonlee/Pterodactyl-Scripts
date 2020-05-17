@@ -73,8 +73,17 @@ yum -y install mariadb-server mariadb
 systemctl enable mariadb
 systemctl start mariadb
 
+# Configure Pterodactyl Panel
+echo ""
+echo "###########################################"
+echo "#                                         #"
+echo "#     Configuring MariaDB Inital Setup    #"
+echo "#                                         #"
+echo "###########################################"
+
 #Auto Complete mysql_secure_installation
 SECURE_MYSQL=$(expect -c "
+set timeout 5
 spawn mysql_secure_installation
 expect \"Enter current password for root (enter for none):\"
 send \"$MYSQL\r\"
@@ -90,14 +99,6 @@ expect \"Reload privilege tables now?\"
 send \"y\r\"
 expect eof
 ")
-
-# Configure Pterodactyl Panel
-echo ""
-echo "###########################################"
-echo "#                                         #"
-echo "#     Configuring MariaDB Inital Setup    #"
-echo "#                                         #"
-echo "###########################################"
 
 # Configure Panel Database
 MySQLUserPwd=$(openssl rand -base64 16)
@@ -135,10 +136,6 @@ echo " Copy the link for the panel.tar.gz and paste below!"
 echo ""
 
 read -p "Paste Here: " PanelRepo
-if [ "$panelRepo" = "" ]; then
-    echo "Value Cannot be Empty!!"
-    read -p "Paste Here: " PanelRepo
-fi
 
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 mkdir -p /var/www/pterodactyl
@@ -158,10 +155,6 @@ echo "############################################"
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Panel"
 read -p "Enter FQDN: " panelfqdn
-if [ "$panelfqdn" = "" ]; then
-    echo "Value Cannot be Empty!!"
-    read -p "Paste Here: " panelfqdn
-fi
 
 # Execute Certbot Certificate
 /usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --agree-tos --register-unsafely-without-email --manual-public-ip-logging-ok
