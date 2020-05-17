@@ -91,8 +91,16 @@ send \"y\r\"
 expect eof
 ")
 
+# Configure Pterodactyl Panel
+echo ""
+echo "###########################################"
+echo "#                                         #"
+echo "#     Configuring MariaDB Inital Setup    #"
+echo "#                                         #"
+echo "###########################################"
+
 # Configure Panel Database
-MySQLUserPwd=$(openssl rand -base64 21)
+MySQLUserPwd=$(openssl rand -base64 16)
 
 echo ""
 echo "Please Enter Root MySQL Password to execute mysql_secure_installation"
@@ -146,7 +154,7 @@ echo "############################################"
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Panel"
 read -p "Enter FQDN: " panelfqdn
-/usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email
+/usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email --manual-public-ip-logging-ok
 
 # Execute Composer Setup
 cp .env.example .env
@@ -167,7 +175,8 @@ php artisan migrate --seed
 php artisan p:user:make
 
 # Configure Nginx Default Site
-curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/nginx_template -o /etc/nginx/conf.d/pterodactyl.conf
+curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/nginx_template_no_ssl -o /etc/nginx/conf.d/pterodactyl.conf
+sed "s/<domain>/$panelfqdn/g" /etc/nginx/conf.d/pterodactyl.conf
 chown -R nginx:nginx *
 service nginx restart
 
