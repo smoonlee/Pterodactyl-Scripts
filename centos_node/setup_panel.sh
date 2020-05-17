@@ -116,7 +116,6 @@ echo " New Panel? You need to get you some Pterodactyl Panel goodness!!"
 echo " Please Visit: https://github.com/pterodactyl/panel/releases"
 echo " Copy the link for the panel.tar.gz and paste below!"
 echo ""
-
 read -p "Paste Here: " PanelRepo
 
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -136,7 +135,7 @@ echo "############################################"
 
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Panel"
-read -p "Enter FQDN: " panelfqdn
+read -p "Paste Here: " panelfqdn
 
 # Execute Certbot Certificate
 /usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --agree-tos --register-unsafely-without-email --manual-public-ip-logging-ok
