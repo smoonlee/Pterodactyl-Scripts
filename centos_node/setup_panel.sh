@@ -73,8 +73,11 @@ echo "#     Configuring MariaDB Inital Setup    #"
 echo "#                                         #"
 echo "###########################################"
 
-# Auto Complete mysql_secure_installation
+# Configure MariaDB Passwords
+MaridDBMaster=$(openssl rand -base64 21)
+$MySQLUserPwd=$(openssl rand -base64 21)
 
+# Auto Complete mysql_secure_installation
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
@@ -95,8 +98,6 @@ expect eof
 echo "mysql_secure_installation completed!"
 
 # Configure Panel Database
-MySQLUserPwd=$(openssl rand -base64 21)
-
 echo ""
 echo "Please Enter Root MySQL Password to execute mysql_secure_installation"
 mysql -u root -p <<MYSQL_SCRIPT
