@@ -55,8 +55,8 @@ echo " New Node? You need to get you some Pterodactyl Daemon goodness!!"
 echo " Please Visit: https://github.com/pterodactyl/daemon/releases"
 echo " Copy the link for the daemon.tar.gz and paste below!"
 echo ""
+read -p "Paste Here: " NodePanel
 
-read -p "Paste Here: " NodeRepo
 curl -L $NodeRepo | tar --strip-components=1 -xzv
 npm install --only=production --no-audit --unsafe-perm
 
