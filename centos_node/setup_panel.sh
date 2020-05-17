@@ -73,11 +73,6 @@ echo "#     Configuring MariaDB Inital Setup    #"
 echo "#                                         #"
 echo "###########################################"
 
-# Configure MariaDB Passwords
-$MariaDBMaster=$(openssl rand -base64 21)
-$MySQLUserPwd=$(openssl rand -base64 21)
-
-# Auto Complete mysql_secure_installation
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
@@ -98,6 +93,8 @@ expect eof
 echo "mysql_secure_installation completed!"
 
 # Configure Panel Database
+MySQLUserPwd=$(openssl rand -base64 21)
+
 echo ""
 echo "Please Enter Root MySQL Password to execute mysql_secure_installation"
 mysql -u root -p <<MYSQL_SCRIPT
@@ -107,6 +104,14 @@ ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION; FLUSH
 PRIVILEGES;
 exit
 MYSQL_SCRIPT
+
+echo ""
+echo ""
+echo "MySQL Database: Panel Created!"
+echo ""
+echo "Database: panel"
+echo "Username: pterodactyl"
+echo "Password: $MySQLUserPwd"
 
 echo ""
 echo ""
