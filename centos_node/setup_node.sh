@@ -15,18 +15,20 @@ fi
 echo ""
 echo "##############################################"
 echo "#                                            #"
-echo "#  Pterodactyl Automated Node Setup Script  #"
+echo "#  Pterodactyl Automated Node Setup Script   #"
 echo "#  Version 0.1-Alpha                         #"
 echo "#                                            #"
 echo "##############################################"
 
-
-yum install  install -y tar unzip make gcc gcc-c++ python2  nodejs
-yum install -y yum-utils device-mapper-persistent-data lvm2
-
+yum install -y yum-utils tar unzip make gcc gcc-c++ python2 nodejs npm device-mapper-persistent-data lvm2
 yum config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-
 yum install -y docker-ce --nobest
+
+# Setup cert-bot
+curl -L https://dl.eff.org/certbot-auto -o /usr/local/bin/certbot-auto
+chown root /usr/local/bin/certbot-auto
+chmod 0755 /usr/local/bin/certbot-auto
+echo y | /usr/local/bin/certbot-auto
 
 systemctl enable docker
 systemctl start docker
@@ -36,10 +38,26 @@ firewall-cmd --add-port 2022/tcp --permanent
 firewall-cmd --permanent --zone=trusted --change-interface=docker0
 firewall-cmd --reload
 
+# Install Daemon Software
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#  Installing Pterodactyl Daemon Software  #"
+echo "#                                          #"
+echo "############################################"
+
 mkdir -p /srv/daemon /srv/daemon-data
 cd /srv/daemon
 
-curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.13/daemon.tar.gz | tar --strip-components=1 -xzv
+# Download Latest Panel
+echo ""
+echo " New Node? You need to get you some Pterodactyl Daemon goodness!!"
+echo " Please Visit: https://github.com/pterodactyl/daemon/releases"
+echo " Copy the link for the daemon.tar.gz and paste below!"
+echo ""
+
+read -p "Paste Here: " NodeRepo
+curl -L $NodeRepo | tar --strip-components=1 -xzv
 npm install --only=production --no-audit --unsafe-perm
 
 echo ""
@@ -54,6 +72,6 @@ $NodeToken
 sudo npm start
 
 # Configure Wings Service
-wget https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/wings.service -O /etc/systemd/system/wings.service
+curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/wings.service -o /etc/systemd/system/wings.service
 systemctl enable wings
 systemctl start wings
