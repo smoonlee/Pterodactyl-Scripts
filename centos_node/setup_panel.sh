@@ -165,8 +165,8 @@ php artisan p:environment:mail
 php artisan migrate --seed
 php artisan p:user:make
 
-curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/nginx_template -o /etc/nginx/conf.d/pterodactyl.conf
-
+curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/nginx_template_ssl -o /etc/nginx/conf.d/pterodactyl.conf
+sed -i "s/<domain>/$panelfqdn/g" /etc/nginx/conf.d/pterodactyl.conf
 chown -R nginx:nginx *
 service nginx restart
 
