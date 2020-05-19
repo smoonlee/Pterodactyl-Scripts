@@ -1,3 +1,4 @@
+#
 #!/bin/bash
 #
 
@@ -6,10 +7,10 @@ clear
 
 # Check Session Status
 if [[ $EUID -ne 0 ]]; then
-    echo "This script must be run as root"
-    exit 1
+   echo "This script must be run as root"
+   exit 1
 elif [[ $EUID -eq 0 ]]; then
-    echo -e "Session Running as \e[36mROOT\e[0m"
+   echo -e "Session Running as \e[36mROOT\e[0m"
 fi
 
 echo ""
@@ -20,9 +21,17 @@ echo "#  Version 0.1-Alpha                         #"
 echo "#                                            #"
 echo "##############################################"
 
-# Check System Updates
+# Check System Updates 
 yum update
 yum install -y yum-utils net-tools expect
+
+# Install Pterodactyl Panel Packages
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#  Installing Pterodactyl Panel Packages   #"
+echo "#                                          #"
+echo "############################################"
 
 # Setup cert-bot
 curl -L https://dl.eff.org/certbot-auto -o /usr/local/bin/certbot-auto
@@ -36,19 +45,17 @@ setsebool -P httpd_can_network_connect 1
 setsebool -P httpd_execmem 1
 setsebool -P httpd_unified 1
 
-# Install Nginx
+# Install Nginx 
 yum install -y nginx
 firewall-cmd --add-service=http --permanent
-firewall-cmd --add-service=https --permanent
+firewall-cmd --add-service=https --permanent 
 firewall-cmd --reload
 
 # Install PHP 7.4
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 yum install -y https://rpms.remirepo.net/enterprise/remi-release-8.rpm
-yum update
-yum install -y php php-common php-fpm php-cli php-json php-mysqlnd php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache
+yum update ; yum install -y php php-common php-fpm php-cli php-json php-mysqlnd php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache
 
-# Configure PHP-FPM
 curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/www-pterodactyl.conf -o /etc/php-fpm.d/www-pterodactyl.conf
 systemctl enable php-fpm
 systemctl start php-fpm
@@ -57,14 +64,6 @@ systemctl start php-fpm
 yum install -y redis
 systemctl start redis
 systemctl enable redis
-
-# Configure Pterodactyl Panel
-echo ""
-echo "###########################################"
-echo "#                                         #"
-echo "#     Configuring MariaDB Inital Setup    #"
-echo "#                                         #"
-echo "###########################################"
 
 # Install MariaDB
 curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
@@ -124,6 +123,7 @@ echo " New Panel? You need to get you some Pterodactyl Panel goodness!!"
 echo " Please Visit: https://github.com/pterodactyl/panel/releases"
 echo " Copy the link for the panel.tar.gz and paste below!"
 echo ""
+
 read -p "Paste Here: " PanelRepo
 
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -141,14 +141,6 @@ echo "#       Configure Pterodactyl Panel        #"
 echo "#                                          #"
 echo "############################################"
 
-echo ""
-echo "Please enter the FQDN for the Pyterdactyl Panel"
-read -p "Paste Here: " panelfqdn
-
-# Execute Certbot Certificate
-/usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --agree-tos --register-unsafely-without-email --manual-public-ip-logging-ok
-
-# Execute Composer Setup
 cp .env.example .env
 /usr/local/bin/composer install --no-dev --optimize-autoloader
 
@@ -166,21 +158,12 @@ php artisan p:environment:mail
 php artisan migrate --seed
 php artisan p:user:make
 
-# Configure Nginx Default Site
-curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/nginx_template_ssl -o /etc/nginx/conf.d/pterodactyl.conf
-sed -i "s/<domain>/$panelfqdn/g" /etc/nginx/conf.d/pterodactyl.conf
-chown -R nginx:nginx *
-systemctl restart nginx
+curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/nginx_template -o /etc/nginx/conf.d/pterodactyl.conf
 
-# Configure Ptero Service
+chown -R nginx:nginx *
+service nginx restart
+
+# Configure Ptero Service 
 curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/pteroq.service -o /etc/systemd/system/pteroq.service
 systemctl enable pteroq.service
 systemctl start pteroq.service
-
-# Script Completed
-echo ""
-echo "############################################"
-echo "#                                          #"
-echo "#    Pterodactyl Panel Setup Completed!    #"
-echo "#                                          #"
-echo "############################################"
