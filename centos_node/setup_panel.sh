@@ -141,6 +141,13 @@ echo "#       Configure Pterodactyl Panel        #"
 echo "#                                          #"
 echo "############################################"
 
+echo ""
+echo "Please enter the FQDN for the Pyterdactyl Panel"
+read -p "Paste Here: " panelfqdn
+
+# Execute Certbot Certificate
+/usr/local/bin/certbot-auto certonly -d "$panelfqdn" --manual --preferred-challenges dns --agree-tos --register-unsafely-without-email --manual-public-ip-logging-ok
+
 cp .env.example .env
 /usr/local/bin/composer install --no-dev --optimize-autoloader
 
@@ -167,3 +174,11 @@ service nginx restart
 curl -L https://raw.githubusercontent.com/smoonlee/Pterodactyl-Scripts/master/centos_node/pteroq.service -o /etc/systemd/system/pteroq.service
 systemctl enable pteroq.service
 systemctl start pteroq.service
+
+# Panel Setup Complete
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#       Configure Pterodactyl Panel        #"
+echo "#                                          #"
+echo "############################################"
