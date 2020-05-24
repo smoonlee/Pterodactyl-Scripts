@@ -20,9 +20,14 @@ echo "#  Version 0.1-Alpha                         #"
 echo "#                                            #"
 echo "##############################################"
 
-yum install -y yum-utils tar unzip make gcc gcc-c++ python2 nodejs npm device-mapper-persistent-data lvm2
-yum config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-yum install -y docker-ce --nobest
+curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
+yum install -y yum-utils tar unzip make gcc gcc-c++ python2 device-mapper-persistent-data lvm2 nodejs npm
+yum install -y yum-utils device-mapper-persistent-data lvm2
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum install -y docker-ce
+
+systemctl enable docker
+systemctl start docker
 
 # Installing Certbot
 OS=$(sed -nE 's/^PRETTY_NAME="([^"]+)".*/\1/p' /etc/os-release)
@@ -35,9 +40,6 @@ elif [[ "$OS" == "CentOS Linux 8 (Core)" ]]; then
     yum config-manager --set-enabled PowerTools
     yum -y install certbot
 fi
-
-systemctl enable docker
-systemctl start docker
 
 firewall-cmd --add-port 8080/tcp --permanent
 firewall-cmd --add-port 2022/tcp --permanent
