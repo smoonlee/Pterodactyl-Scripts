@@ -1,1 +1,76 @@
 
+#
+
+#!/bin/bash
+
+# Install MariaDB
+curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+yum -y install mariadb-server mariadb expect epel-release
+systemctl enable mariadb
+systemctl start mariadb
+
+#
+firewall-cmd --zone=public --add-service=mysql --permanent
+firewall-cmd --reload
+
+# OpenSSL Password Generation
+MySQLRootPwd=$(openssl rand -base64 30)
+Node1_PanelPwd=$(openssl rand -base64 30)
+Node2_PanelPwd=$(openssl rand -base64 30)
+
+echo "#####################################"
+echo "#                                   #"
+echo "# Running MySQL Secure Configuation #"
+echo "#                                   #"
+echo "#####################################"
+
+SECURE_MYSQL=$(expect -c "
+set timeout 10
+spawn mysql_secure_installation
+expect \"Enter current password for root (enter for none):\"
+send \"$MySQLRootPwd\r\"
+expect \"Change the root password?\"
+send \"n\r\"
+expect \"Remove anonymous users?\"
+send \"y\r\"
+expect \"Disallow root login remotely?\"
+send \"y\r\"
+expect \"Remove test database and access to it?\"
+send \"y\r\"
+expect \"Reload privilege tables now?\"
+send \"y\r\"
+expect eof ")
+
+mysql -u root -passowrd=$MySQLRootPwd <<MYSQL_SCRIPT
+# START
+
+# Remember to change 'somePassword' below to be a unique password specific to this account.
+CREATE USER 'pterod_node1'@'azuris-web-node01.azurishosting.co.uk' IDENTIFIED BY '$Node1_PanelPwd';
+CREATE USER 'pterod_node2'@'azuris-web-node02.azurishosting.co.uk' IDENTIFIED BY '$Node2_PanelPwd';
+
+# Create MySQL Databases
+CREATE DATABASE panel;
+CREATE DATABASE lobmysql;
+
+# Panel Configuration
+GRANT ALL PRIVILEGES ON panel.* TO 'pterod_node1'@'azuris-web-node01.azurishosting.co.uk' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON panel.* TO 'pterod_node2'@'azuris-web-node02.azurishosting.co.uk' WITH GRANT OPTION;
+
+# Nginx Proxy Configuration
+GRANT ALL PRIVILEGES ON lobmysql.* TO 'pterod_node1'@'azuris-web-node01.azurishosting.co.uk' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON lobmysql.* TO 'pterod_node2'@'azuris-web-node02.azurishosting.co.uk' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+exit
+# FINISH
+MYSQL_SCRIPT
+
+echo "MySQL Root Credentials"
+echo "Username: root"
+echo "Password: $MySQLRootPwd"
+echo ""
+echo "Pterodactayl Database Details:"
+echo "Database: panel"
+echo "Username: pterod_node1"
+echo "Node 1 Pwd: $Node1_PanelPwd"
+echo "Username: pterod_node2"
+echo "Node 2 Pwd: $Node2_PanelPwd"
