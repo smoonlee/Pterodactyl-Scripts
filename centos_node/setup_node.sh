@@ -24,11 +24,17 @@ yum install -y yum-utils tar unzip make gcc gcc-c++ python2 nodejs npm device-ma
 yum config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
 yum install -y docker-ce --nobest
 
-# Setup cert-bot
-curl -L https://dl.eff.org/certbot-auto -o /usr/local/bin/certbot-auto
-chown root /usr/local/bin/certbot-auto
-chmod 0755 /usr/local/bin/certbot-auto
-echo y | /usr/local/bin/certbot-auto
+# Installing Certbot
+OS=$(sed -nE 's/^PRETTY_NAME="([^"]+)".*/\1/p' /etc/os-release)
+if [[ "$OS" == "CentOS Linux 7 (Core)" ]]; then
+    yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    yum -y install certbot python2-certbot-nginx
+elif [[ "$OS" == "CentOS Linux 8 (Core)" ]]; then
+    yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    ARCH=$( /bin/arch )
+    yum config-manager --set-enabled PowerTools
+    yum -y install certbot
+fi
 
 systemctl enable docker
 systemctl start docker
@@ -49,7 +55,7 @@ echo "############################################"
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Node"
 read -p "Enter FQDN: " nodefqdn
-/usr/local/bin/certbot-auto certonly -d "$nodefqdn" --manual --preferred-challenges dns --agree-tos --register-unsafely-without-email --manual-public-ip-logging-ok
+certbot certonly -d "$nodefqdn" --manual --preferred-challenges dns --agree-tos --register-unsafely-without-email --manual-public-ip-logging-ok
 
 mkdir -p /srv/daemon /srv/daemon-data
 cd /srv/daemon
