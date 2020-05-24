@@ -21,10 +21,10 @@ echo "#                                            #"
 echo "##############################################"
 
 curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
-yum install -y yum-utils tar unzip make gcc gcc-c++ python2 device-mapper-persistent-data lvm2 nodejs npm
+yum install -y yum-utils tar unzip make gcc gcc-c++ python2 device-mapper-persistent-data lvm2
 yum install -y yum-utils device-mapper-persistent-data lvm2
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-yum install -y docker-ce
+yum install -y docker-ce 
 
 systemctl enable docker
 systemctl start docker
