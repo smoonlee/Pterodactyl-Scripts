@@ -14,12 +14,12 @@ elif [[ $EUID -eq 0 ]]; then
 fi
 
 echo ""
-echo "#############################################"
-echo "#                                           #"
-echo "#  AnarchyPE Automated Node Update Script   #"
-echo "#  Version 0.1-Alpha                        #"
-echo "#                                           #"
-echo "#############################################"
+echo "###############################################"
+echo "#                                             #"
+echo "#  Pterodactyl Automated Node Update Script   #"
+echo "#  Version 0.1-Alpha                          #"
+echo "#                                             #"
+echo "###############################################"
 
 # Change to Pterodactyl Web Directory
 cd /srv/daemon
