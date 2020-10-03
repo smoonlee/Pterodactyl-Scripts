@@ -10,4 +10,4 @@ curl -L https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master
 curl -L https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/centos_node/setup_node.sh -o setup_node.sh | sudo bash setup_node.sh
 
 # For CentOS Ptero Node Update
-curl -L https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/centos_node/update_panel.sh -o setup_panel.sh | sudo bash update_panel.sh
+curl -L https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/centos_node/update_node.sh -o setup_node.sh | sudo bash update_node.sh
