@@ -70,7 +70,7 @@ SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
 expect \"Enter current password for root (enter for none):\"
-send \"$MYSQL\r\"
+send \"y\r\"
 expect \"Change the root password?\"
 send \"n\r\"
 expect \"Remove anonymous users?\"
