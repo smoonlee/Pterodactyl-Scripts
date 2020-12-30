@@ -51,6 +51,10 @@ systemctl start nginx
 systemctl enable redis-server
 systemctl start redis-server
 
+# Enanle PHP-FPM
+systemctl enable php7.4-fpm
+systemctl start php7.4-fpm
+
 # Configure MariaDB
 echo "#--------------------------------#"
 echo "#                                #"
@@ -102,10 +106,6 @@ MYSQL_SCRIPT
 echo ""
 echo ""
 echo "MySQL Database: Panel Created!"
-echo ""
-echo "Database: panel"
-echo "Username: pterodactyl"
-echo "Password: $MySQLUserPwd"
 
 echo ""
 echo "############################################"
@@ -117,7 +117,7 @@ echo "############################################"
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Panel"
 read -p "Enter FQDN: " panelfqdn
-certbot certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email --pre-hook "service apache2 stop" --post-hook "service apache2 start"
+#certbot certonly -d "$panelfqdn" --authenticator standalone --agree-tos --register-unsafely-without-email --pre-hook "service nginx stop" --post-hook "service nginx start"
 
 # Download ssl config
 wget https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/current/ubuntu/pterodactyl.conf -O /etc/nginx/sites-available/pterodactyl.conf
@@ -158,7 +158,7 @@ echo "#                                          #"
 echo "############################################"
 
 cp .env.example .env
-composer install --no-dev --optimize-autoloader
+/usr/local/bin/composer install --no-dev --optimize-autoloader
 
 # Only run the command below if you are installing this Panel for
 # the first time and do not have any Pterodactyl Panel data in the database.
@@ -177,4 +177,21 @@ php artisan p:user:make
 chown -R www-data:www-data *
 service nginx restart
 
+# COnfigure Ptero Sevice
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#       Configure Pterodactyl Service      #"
+echo "#                                          #"
+echo "############################################"
+wget https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/current/ubuntu/pteroq.service -O /etc/systemd/system/pteroq.service
+systemctl enable pteroq.service
+systemctl start  pteroq.service
 
+
+# Script End Detilas
+
+echo ""
+echo "Database: panel"
+echo "Username: pterodactyl"
+echo "Password: $MySQLUserPwd"
