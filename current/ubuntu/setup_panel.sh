@@ -35,7 +35,7 @@ curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin
 
 echo "#--------------------------------#"
 echo "#                                #"
-echo "#   Installing System Packages   #"
+echo "#     Enable System Services     #"
 echo "#                                #"
 echo "#--------------------------------#"
 
@@ -146,6 +146,9 @@ curl -Lo panel.tar.gz $PanelRepo
 tar -xzvf panel.tar.gz
 chmod -R 755 storage/* bootstrap/cache/
 
+cp .env.example .env
+/usr/local/bin/composer install --no-dev --optimize-autoloader
+
 # Configure Pterodactyl Panel
 echo ""
 echo "############################################"
@@ -153,9 +156,6 @@ echo "#                                          #"
 echo "#       Configure Pterodactyl Panel        #"
 echo "#                                          #"
 echo "############################################"
-
-cp .env.example .env
-/usr/local/bin/composer install --no-dev --optimize-autoloader
 
 # Only run the command below if you are installing this Panel for
 # the first time and do not have any Pterodactyl Panel data in the database.
