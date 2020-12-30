@@ -120,7 +120,7 @@ read -p "Enter FQDN: " panelfqdn
 certbot certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email --pre-hook "service apache2 stop" --post-hook "service apache2 start"
 
 # Download ssl config
-wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pterodactyl.conf -O /etc/nginx/sites-available/pterodactyl.conf
+wget https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/current/ubuntu/pterodactyl.conf -O /etc/nginx/sites-available/pterodactyl.conf
 
 # Configure default website and restart nginx service
 sed -i -e "s/<domain>/"$panelfqdn"/g" /etc/nginx/sites-available/pterodactyl.conf
