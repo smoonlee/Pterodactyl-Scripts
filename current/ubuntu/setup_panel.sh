@@ -157,6 +157,11 @@ echo "#       Configure Pterodactyl Panel        #"
 echo "#                                          #"
 echo "############################################"
 
+echo ""
+echo "Database: panel"
+echo "Username: pterodactyl"
+echo "Password: $MySQLUserPwd"
+
 # Only run the command below if you are installing this Panel for
 # the first time and do not have any Pterodactyl Panel data in the database.
 php artisan key:generate --force
@@ -184,11 +189,3 @@ echo "############################################"
 wget https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/current/ubuntu/pteroq.service -O /etc/systemd/system/pteroq.service
 systemctl enable pteroq.service
 systemctl start  pteroq.service
-
-
-# Script End Detilas
-
-echo ""
-echo "Database: panel"
-echo "Username: pterodactyl"
-echo "Password: $MySQLUserPwd"
