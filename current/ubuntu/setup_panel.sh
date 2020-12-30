@@ -91,7 +91,6 @@ echo "#  Configure Database and User   #"
 echo "#                                #"
 echo "#--------------------------------#"
 
-
 # Create Pterodactyl Panel Data and User Account
 echo ""
 echo "Please Enter Root MySQL Password to execute mysql_secure_installation"
@@ -139,10 +138,8 @@ echo " New Panel? You need to get you some Pterodactyl Panel goodness!!"
 echo " Please Visit: https://github.com/pterodactyl/panel/releases"
 echo " Copy the link for the panel.tar.gz and paste below!"
 echo ""
-
 read -p "Paste Here: " PanelRepo
 
-curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 mkdir -p /var/www/pterodactyl
 cd /var/www/pterodactyl
 curl -Lo panel.tar.gz $PanelRepo
