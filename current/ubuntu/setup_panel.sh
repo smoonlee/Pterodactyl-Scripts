@@ -41,7 +41,7 @@ echo "#--------------------------------#"
 
 # Enable MariaDB Database Service
 systemctl enable mariadb
-systemctl start mairadb
+systemctl start mariadb
 
 # Enable Nginx Web Service
 systemctl enable nginx
@@ -143,7 +143,7 @@ read -p "Paste Here: " PanelRepo
 mkdir -p /var/www/pterodactyl
 cd /var/www/pterodactyl
 curl -Lo panel.tar.gz $PanelRepo
-tar --strip-components=1 -xzvf panel.tar.gz
+tar -xzvf panel.tar.gz
 chmod -R 755 storage/* bootstrap/cache/
 
 # Configure Pterodactyl Panel
