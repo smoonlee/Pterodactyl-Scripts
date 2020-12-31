@@ -1,5 +1,5 @@
 #!/bin/bash
-# Ubuntu - Pterodactyl Web Panel Setyp Script
+# Ubuntu - Pterodactyl Web Panel Setup Script
 # Author: Simon Lee
 # Twitter: @smoon_lee
 # Github: https://github.com/smoonlee
