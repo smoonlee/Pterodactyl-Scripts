@@ -62,15 +62,15 @@ echo "#  Configuring MariaDB Database  #"
 echo "#                                #"
 echo "#--------------------------------#"
 
-# Create Random MySQL Password
-MySQLUserPwd=$(openssl rand -base64 21)
+# OpenSSL Password Generation
+MysqlRootPwd=$(openssl rand -base64 30)
+MysqlPanelPwd=$(openssl rand -base64 20)
 
-# Auto Complete - mysql_secure_installation
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
 expect \"Enter current password for root (enter for none):\"
-send \"y\r\"
+send \"$MysqlRootPwd\r\"
 expect \"Change the root password?\"
 send \"n\r\"
 expect \"Remove anonymous users?\"
@@ -83,7 +83,6 @@ expect \"Reload privilege tables now?\"
 send \"y\r\"
 expect eof
 ")
-echo "mysql_secure_installation completed!"
 
 echo "#--------------------------------#"
 echo "#                                #"
@@ -102,7 +101,6 @@ PRIVILEGES;
 exit
 MYSQL_SCRIPT
 
-echo ""
 echo ""
 echo "MySQL Database: Panel Created!"
 
