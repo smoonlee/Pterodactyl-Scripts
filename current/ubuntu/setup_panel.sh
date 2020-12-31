@@ -107,11 +107,11 @@ echo ""
 echo "MySQL Database: Panel Created!"
 
 echo ""
-echo "############################################"
-echo "#                                          #"
-echo "#     Generate Certbot SSL Certificate     #"
-echo "#                                          #"
-echo "############################################"
+echo "#--------------------------------#"
+echo "#                                #"
+echo "#   Configure SSL Certificate    #"
+echo "#                                #"
+echo "#--------------------------------#"
 
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Panel"
@@ -127,11 +127,11 @@ ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/ptero
 
 # Install Pterodactyl Panel
 echo ""
-echo "############################################"
-echo "#                                          #"
-echo "#         Install Pterodactyl Panel        #"
-echo "#                                          #"
-echo "############################################"
+echo "#--------------------------------#"
+echo "#                                #"
+echo "#   Download Pterodactyl Panel   #"
+echo "#                                #"
+echo "#--------------------------------#"
 
 echo ""
 echo " New Panel? You need to get you some Pterodactyl Panel goodness!!"
@@ -151,15 +151,20 @@ cp .env.example .env
 
 # Configure Pterodactyl Panel
 echo ""
-echo "############################################"
-echo "#                                          #"
-echo "#       Configure Pterodactyl Panel        #"
-echo "#                                          #"
-echo "############################################"
+echo "#--------------------------------#"
+echo "#                                #"
+echo "#  Installing Pterodactyl Panel  #"
+echo "#                                #"
+echo "#--------------------------------#"
 
 # Only run the command below if you are installing this Panel for
 # the first time and do not have any Pterodactyl Panel data in the database.
 php artisan key:generate --force
+
+echo ""
+echo "Database: panel"
+echo "Username: pterodactyl"
+echo "Password: $MySQLUserPwd"
 
 php artisan p:environment:setup
 php artisan p:environment:database
@@ -174,21 +179,23 @@ php artisan p:user:make
 chown -R www-data:www-data *
 service nginx restart
 
-# COnfigure Ptero Sevice
+# Configure Ptero Sevice
 echo ""
-echo "############################################"
-echo "#                                          #"
-echo "#       Configure Pterodactyl Service      #"
-echo "#                                          #"
-echo "############################################"
+echo "#--------------------------------#"
+echo "#                                #"
+echo "#    Configure Pteroq Service    #"
+echo "#                                #"
+echo "#--------------------------------#"
 wget https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/current/ubuntu/pteroq.service -O /etc/systemd/system/pteroq.service
 systemctl enable pteroq.service
 systemctl start  pteroq.service
 
-
-# Script End Detilas
-
+# Script End Message
+echo "#--------------------------------#"
+echo "#                                #"
+echo "#  Pterodactyl Setup Completed!  #"
+echo "#                                #"
+echo "#--------------------------------#"
 echo ""
-echo "Database: panel"
-echo "Username: pterodactyl"
-echo "Password: $MySQLUserPwd"
+echo " The Panel is ready and waiting at https://$panelfqdn "
+echo "" 
