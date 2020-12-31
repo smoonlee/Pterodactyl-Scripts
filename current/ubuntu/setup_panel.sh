@@ -161,12 +161,13 @@ echo "#--------------------------------#"
 # the first time and do not have any Pterodactyl Panel data in the database.
 php artisan key:generate --force
 
+php artisan p:environment:setup
+
 echo ""
 echo "Database: panel"
 echo "Username: pterodactyl"
 echo "Password: $MySQLUserPwd"
 
-php artisan p:environment:setup
 php artisan p:environment:database
 
 # To use PHP's internal mail sending (not recommended), select "mail". To use a

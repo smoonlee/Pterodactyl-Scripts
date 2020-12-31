@@ -31,27 +31,37 @@ echo "#                                #"
 echo "#--------------------------------#"
 
 # Downkload New Panel
+echo ""
+echo " New Panel? You need to get you some Pterodactyl Panel goodness!!"
+echo " Please Visit: https://github.com/pterodactyl/panel/releases"
+echo " Copy the link for the panel.tar.gz and paste below!"
+echo ""
+read -p "Paste Here: " PanelRepo
+
 mkdir -p /var/www/pterodactyl
 cd /var/www/pterodactyl
 curl -Lo panel.tar.gz $PanelRepo
 tar -xzvf panel.tar.gz
 chmod -R 755 storage/* bootstrap/cache/
 
+
 cp .env.example .env
 /usr/local/bin/composer install --no-dev --optimize-autoloader
 
-#
+# Reset Complied Template Cache
 php artisan view:clear
 php artisan config:clear
+echo ""
 
-# Update Database Schema
+# Update Database
 php artisan migrate --seed --force
 
-# Set File Permissions
+# Reset Permisisons for Web Directory # UBUNTU
 chown -R www-data:www-data *
 
-# Restart Worker Queue
+# Restore Panel to Acitve Mode - Allows Log Authentication
 php artisan queue:restart
+service pteroq restart
 
-# Bring Panel Out of Maintiance Mode
+# Bring the Panel back up to receive connections.
 php artisan up
