@@ -114,7 +114,7 @@ echo "#--------------------------------#"
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Panel"
 read -p "Enter FQDN: " panelfqdn
-#certbot certonly -d "$panelfqdn" --authenticator standalone --agree-tos --register-unsafely-without-email --pre-hook "service nginx stop" --post-hook "service nginx start"
+certbot certonly -d "$panelfqdn" --authenticator standalone --agree-tos --register-unsafely-without-email --pre-hook "service nginx stop" --post-hook "service nginx start"
 
 # Download ssl config
 wget https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/current/ubuntu/pterodactyl.conf -O /etc/nginx/sites-available/pterodactyl.conf
