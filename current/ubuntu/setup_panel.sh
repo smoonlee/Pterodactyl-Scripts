@@ -64,6 +64,9 @@ echo "#--------------------------------#"
 # Define Mysql Root Password
 MysqlRootPwd=$(openssl rand -base64 26)
 
+#Debug
+echo $MysqlRootPwd
+
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
@@ -125,14 +128,20 @@ echo "#--------------------------------#"
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Panel"
 read -p "Enter FQDN: " panelfqdn
-certbot certonly -d "$panelfqdn" --authenticator standalone --agree-tos --register-unsafely-without-email --pre-hook "service nginx stop" --post-hook "service nginx start"
 
 # Download ssl config
-wget https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/current/ubuntu/pterodactyl.conf -O /etc/nginx/sites-available/pterodactyl.conf
+curl -s https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/current/ubuntu/nginx_default -o '/etc/nginx/sites-enabled/default'
+curl -s https://raw.githubusercontent.com/smoonlee/pterodactyl-automation/master/current/ubuntu/pterodactyl.conf -o '/etc/nginx/sites-available/pterodactyl.conf'
+echo "SSL Configuration Files Downloaded"
 
 # Configure default website and restart nginx service
+sed -i -e "s/<domain>/"$panelfqdn"/g" /etc/nginx/sites-enabled/default
 sed -i -e "s/<domain>/"$panelfqdn"/g" /etc/nginx/sites-available/pterodactyl.conf
 ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf && service nginx restart
+echo "SSL Domain Updated in Nginx Sites"
+
+certbot certonly -d "$panelfqdn" --authenticator standalone --agree-tos --register-unsafely-without-email --pre-hook "service nginx stop" --post-hook "service nginx start"
+echo "Certificate Created!"
 
 # Install Pterodactyl Panel
 echo ""
