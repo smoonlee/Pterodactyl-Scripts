@@ -107,7 +107,7 @@ MysqlPanelPwd=$(openssl rand -base64 20)
 # Create Pterodactyl Panel Data and User Account
 echo ""
 echo "Please Enter Root MySQL Password to execute mysql_secure_installation"
-mysql -u root -p <<MYSQL_SCRIPT
+mysql -u root -p"$MysqlRootPwd" <<MYSQL_SCRIPT
 USE mysql; CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '$MySQLUserPwd';
 CREATE DATABASE panel; GRANT ALL PRIVILEGES
 ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION; FLUSH
@@ -117,6 +117,13 @@ MYSQL_SCRIPT
 
 echo ""
 echo "MySQL Database: Panel Created!"
+
+# Verbose Credential Output
+echo "" >> panel_credentials
+echo "Panel MySQL Credentials" >> panel_credentials
+echo "Databse: panel" >> panel_credentials
+echo "Username: pterodactyl" >> panel_credentials
+echo "Password: $MysqlRootPwd" >> panel_credentials
 
 echo ""
 echo "#--------------------------------#"
@@ -216,5 +223,5 @@ echo "#  Pterodactyl Setup Completed!  #"
 echo "#                                #"
 echo "#--------------------------------#"
 echo ""
-echo " The Panel is ready and waiting at https://$panelfqdn "
+echo " The Panel is ready and waiting at https://$panelfqdn " >> panel_credentials
 echo "" 
