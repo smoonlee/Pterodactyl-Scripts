@@ -64,9 +64,6 @@ echo "#--------------------------------#"
 # Define Mysql Root Password
 MysqlRootPwd=$(openssl rand -base64 26)
 
-#Debug
-echo $MysqlRootPwd
-
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
