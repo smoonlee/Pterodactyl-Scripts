@@ -64,6 +64,9 @@ echo "#--------------------------------#"
 # Define Mysql Root Password
 MysqlRootPwd=$(openssl rand -base64 26)
 
+#Debug
+echo $MysqlRootPwd
+
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
@@ -141,7 +144,7 @@ echo "SSL Configuration Files Downloaded"
 # Configure default website and restart nginx service
 sed -i -e "s/<domain>/"$panelfqdn"/g" /etc/nginx/sites-enabled/default
 sed -i -e "s/<domain>/"$panelfqdn"/g" /etc/nginx/sites-available/pterodactyl.conf
-ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf && service nginx restart
+ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
 echo "SSL Domain Updated in Nginx Sites"
 
 certbot certonly -d "$panelfqdn" --authenticator standalone --agree-tos --register-unsafely-without-email --pre-hook "service nginx stop" --post-hook "service nginx start"
