@@ -61,18 +61,20 @@ echo "#                                #"
 echo "#  Configuring MariaDB Database  #"
 echo "#                                #"
 echo "#--------------------------------#"
-
-# OpenSSL Password Generation
-MysqlRootPwd=$(openssl rand -base64 30)
-MysqlPanelPwd=$(openssl rand -base64 20)
+# Define Mysql Root Password
+MysqlRootPwd=$(openssl rand -base64 26)
 
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
 expect \"Enter current password for root (enter for none):\"
-send \"$MysqlRootPwd\r\"
+send \"$MYSQL\r\"
 expect \"Change the root password?\"
-send \"n\r\"
+send \"y\r\"
+expect \"New password:\"
+send \"$MysqlRootPwd\r\"
+expect \"Re-enter new password:\"
+send \"$MysqlRootPwd\r\"
 expect \"Remove anonymous users?\"
 send \"y\r\"
 expect \"Disallow root login remotely?\"
@@ -83,12 +85,21 @@ expect \"Reload privilege tables now?\"
 send \"y\r\"
 expect eof
 ")
+echo "$SECURE_MYSQL"
+
+# Verbose Credential Output
+echo "Root MySQL Credentials" > panel_credentials
+echo "Username: root" >> panel_credentials
+echo "Password: $MysqlRootPwd" >> panel_credentials
 
 echo "#--------------------------------#"
 echo "#                                #"
 echo "#  Configure Database and User   #"
 echo "#                                #"
 echo "#--------------------------------#"
+
+# OpenSSL Password Generation
+MysqlPanelPwd=$(openssl rand -base64 20)
 
 # Create Pterodactyl Panel Data and User Account
 echo ""
