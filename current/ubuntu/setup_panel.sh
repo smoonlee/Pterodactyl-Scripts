@@ -4,6 +4,9 @@
 # Twitter: @smoon_lee
 # Github: https://github.com/smoonlee
 
+# Clear Previous Scren
+clear
+
 # Check Session Status
 if [[ $EUID -ne 0 ]]; then
 	   echo "This script must be run as root"
@@ -17,43 +20,57 @@ echo "#--------------------------------#"
 echo "# Pterodactyl Panel Setup Script #"
 echo "#  Version: 1.0.0                #"
 echo "#--------------------------------#"
+echo ""
 
 # Checking System Update
 apt update && apt upgrade -y
 
+echo ""
 echo "#--------------------------------#"
 echo "#                                #"
 echo "#   Installing System Packages   #"
 echo "#                                #"
 echo "#--------------------------------#"
+echo ""
 
 # Installing Required Packages
 apt install -y curl apt-utils software-properties-common certbot mariadb-server nginx expect php7.4 php7.4-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} redis-server
 
 # Download and Configure Composer
+echo""
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+echo ""
 echo "#--------------------------------#"
 echo "#                                #"
 echo "#     Enable System Services     #"
 echo "#                                #"
 echo "#--------------------------------#"
+echo ""
 
 # Enable MariaDB Database Service
 systemctl enable mariadb
 systemctl start mariadb
+echo "MariaDB Service Started!"
+echo ""
 
 # Enable Nginx Web Service
 systemctl enable nginx
 systemctl start nginx
+echo "Nginx Service Started!"
+echo ""
 
 # Enable Redis Server
 systemctl enable redis-server
 systemctl start redis-server
+echo "Redis Service Started!"
+echo ""
 
 # Enanle PHP-FPM
 systemctl enable php7.4-fpm
 systemctl start php7.4-fpm
+echo "PHP-fpm Service Started!"
+echo ""
 
 # Configure MariaDB
 echo "#--------------------------------#"
@@ -61,11 +78,11 @@ echo "#                                #"
 echo "#  Configuring MariaDB Database  #"
 echo "#                                #"
 echo "#--------------------------------#"
-# Define Mysql Root Password
-MysqlRootPwd=$(openssl rand -base64 26)
+echo ""
+echo "Starting mysql_secure_installation"
 
-#Debug
-echo $MysqlRootPwd
+# Define Mysql Root Password
+MysqlRootPwd=$(openssl rand -base64 30)
 
 SECURE_MYSQL=$(expect -c "
 set timeout 10
@@ -102,15 +119,14 @@ echo "#                                #"
 echo "#--------------------------------#"
 
 # OpenSSL Password Generation
-MysqlPanelPwd=$(openssl rand -base64 20)
+MysqlUserPwd=$(openssl rand -base64 30)
 
 # Create Pterodactyl Panel Data and User Account
-echo ""
-echo "Please Enter Root MySQL Password to execute mysql_secure_installation"
 mysql -u root -p"$MysqlRootPwd" <<MYSQL_SCRIPT
-USE mysql; CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '$MySQLUserPwd';
-CREATE DATABASE panel; GRANT ALL PRIVILEGES
-ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION; FLUSH
+USE mysql; 
+CREATE USER 'pterodactyl'@'localhost' IDENTIFIED BY '$MysqlUserPwd';
+CREATE DATABASE panel; 
+GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'localhost' WITH GRANT OPTION; FLUSH
 PRIVILEGES;
 exit
 MYSQL_SCRIPT
@@ -123,7 +139,7 @@ echo "" >> panel_credentials
 echo "Panel MySQL Credentials" >> panel_credentials
 echo "Databse: panel" >> panel_credentials
 echo "Username: pterodactyl" >> panel_credentials
-echo "Password: $MysqlRootPwd" >> panel_credentials
+echo "Password: $MysqlUserPwd" >> panel_credentials
 
 echo ""
 echo "#--------------------------------#"
