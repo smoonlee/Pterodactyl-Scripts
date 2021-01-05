@@ -207,7 +207,7 @@ php artisan p:environment:setup
 echo ""
 echo "Database: panel"
 echo "Username: pterodactyl"
-echo "Password: $MysqlPanelPwd"
+echo "Password: $MysqlUserPwd"
 
 php artisan p:environment:database
 
